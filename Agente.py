@@ -126,7 +126,12 @@ while True:
 	per=sys.stdin.readline()
 	done="EPISODE_ENDED" in per
 	if done:
-		break
+		sys.stdout.write("START SIMULATION REQUEST\n")
+		sys.stdout.flush()
+		sys.stdin.readline()
+		sys.stdin.readline()
+		pass
+		#break
 	#obtenemos las percepciones de la cadena que nos regresa
 	hedor = "hedor(si)" in per
 	brisa = "brisa(si)" in per
@@ -138,10 +143,11 @@ while True:
 		sys.stdout.write("Agarrar\n")
 		sys.stdout.flush()
 		tenemosOro=True
-
+	#si tenemos el oro y estamos en la casilla inicial escalamos
 	if tenemosOro and x==1 and y==1:
-		sys.stdout.write("Agarrar\n")
+		sys.stdout.write("Escalar\n")
 		sys.stdout.flush()
+		break
 	if golpe:
 		regresar()
 		pass
@@ -169,9 +175,9 @@ while True:
 		x1 += 1
 	else:
 		regresar()
-	print x1
+	'''print x1
 	print y1
-	print result
+	print result'''
 
 print "R.I.P. Agente :( "
 
