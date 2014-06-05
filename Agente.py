@@ -5,6 +5,9 @@ from cStringIO import StringIO
 x = Int('x')
 y = Int('x')
 
+#banderita para saber si tenemos el dinerito :3 
+tenemosOro= False
+
 #Coordenadas en python
 x1=1
 y1=1
@@ -17,6 +20,36 @@ S = Function('S', IntSort(), IntSort(), BoolSort()) #safe
 R = Function('R', IntSort(), IntSort(), BoolSort()) #resplandor
 O = Function('O', IntSort(), IntSort(), BoolSort()) #oro
 
+#Aqui definimos las funciones para aumentar las coordenadas cada que se avanza en base a la direccion a la cual
+#apunta el monito
+def este():
+	global x1
+	x1=x1+1
+def sur():
+	global y1
+	if not y1==1:
+		y1=y1-1
+def oeste():
+	global x1
+	if not x1==1:
+		x1=x1-1
+def norte():
+	global y1
+	y1=y1+1
+
+camino = {
+	1 : este,
+	2 : sur,
+	3 : oeste,
+	4 : norte,
+    }
+
+#direccion sirve para saber cual es la direccion del monito, en este caso comienza viendo al este la cual sera 1
+# 1 = Este
+# 2 = Sur
+# 3 = Oeste
+# 4 = Norte
+direccion=1
 
 def prueba(teoria):
 	old_stdout = sys.stdout
@@ -30,6 +63,34 @@ def prueba(teoria):
 	elif lines[0] == "proved":
 		return True
 
+#funcion para regresar
+def regresar():
+	global direccion
+	sys.stdout.write("Derecha\n")
+	sys.stdout.flush()
+	if direccion < 4:
+		direccion+=1
+	else:
+		direccion = 1
+	sys.stdout.write("Derecha\n")
+	sys.stdout.flush()
+	if direccion < 4:
+		direccion+=1
+	else:
+		direccion=1
+	camino[direccion]()
+	sys.stdout.write("Avanzar\n")
+	sys.stdout.flush()
+	sys.stdout.write("Izquierda\n")
+	sys.stdout.flush()
+	if direccion < 4:
+		direccion=direccion+1
+	else:
+		direccion = 1
+
+	camino[direccion]()
+	sys.stdout.write("Avanzar\n")
+	sys.stdout.flush()
 
 #Reglas de inferencia
 #Regla para cuando hay briza implica que para toda X,Y existe un pozo en los alrededores
@@ -63,13 +124,27 @@ while True:
 	#La percepcion viene en un formato: "percepcion(hedor(no),brisa(no),resplandor(no),golpe(no),grito(no))"
 	#per="percepcion(hedor(no),brisa(no),resplandor(no),golpe(no),grito(no))"
 	per=sys.stdin.readline()
-
+	done="EPISODE_ENDED" in per
+	if done:
+		break
 	#obtenemos las percepciones de la cadena que nos regresa
 	hedor = "hedor(si)" in per
 	brisa = "brisa(si)" in per
 	resplandor = "resplandor(si)" in per
 	golpe = "golpe(si)" in per
 	grito = "grito(si)" in per
+	#recojemos el oro
+	if resplandor:
+		sys.stdout.write("Agarrar\n")
+		sys.stdout.flush()
+		tenemosOro=True
+
+	if tenemosOro and x==1 and y==1:
+		sys.stdout.write("Agarrar\n")
+		sys.stdout.flush()
+	if golpe:
+		regresar()
+		pass
 
 	if hedor:
 		reglas=And(reglas,H(x,y))	
@@ -91,6 +166,12 @@ while True:
 	if result:
 		sys.stdout.write("Avanzar\n")
 		sys.stdout.flush()
-		x += x
+		x1 += 1
+	else:
+		regresar()
+	print x1
+	print y1
 	print result
+
+print "R.I.P. Agente :( "
 
